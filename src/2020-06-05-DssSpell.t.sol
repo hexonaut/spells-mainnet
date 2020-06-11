@@ -71,14 +71,14 @@ contract DssSpellTest is DSTest, DSMath {
     GemAbstract     tusd        = GemAbstract(      0x0000000000085d4780B73119b644AE5ecd22b376);
 
     DSValueAbstract usdcAPip    = DSValueAbstract(  0x77b68899b99b686F415d074278a9a16b336085A0);
-    DSValueAbstract tusdAPip    = DSValueAbstract(  0xeE13831ca96d191B688A670D47173694ba98f1e5); 
+    DSValueAbstract tusdAPip    = DSValueAbstract(  0xeE13831ca96d191B688A670D47173694ba98f1e5);
 
     DssSpell spell;
 
     // CHEAT_CODE = 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D
     bytes20 constant CHEAT_CODE =
         bytes20(uint160(uint256(keccak256('hevm cheat code'))));
-    
+
     uint256 constant THOUSAND   = 10 ** 3;
     uint256 constant MILLION    = 10 ** 6;
     uint256 constant WAD        = 10 ** 18;
@@ -170,7 +170,7 @@ contract DssSpellTest is DSTest, DSMath {
             mat: 120 * RAY / 100,
             beg: 103 * WAD / 100,
             ttl: 6 hours,
-            tau: 3 days 
+            tau: 3 days
         });
         beforeSpell.collaterals["USDC-B"] = CollateralValues({
             line: 10 * MILLION * RAD,
@@ -257,12 +257,6 @@ contract DssSpellTest is DSTest, DSMath {
         spell.cast();
     }
 
-    function stringToBytes32(string memory source) public pure returns (bytes32 result) {
-        assembly {
-            result := mload(add(source, 32))
-        }
-    }
-
     function checkSystemValues(SystemValues storage values) internal {
         // dsr
         assertEq(pot.dsr(), values.dsr);
@@ -273,7 +267,7 @@ contract DssSpellTest is DSTest, DSMath {
 
         // Pause delay
         assertEq(pause.delay(), values.pauseDelay);
-                        
+
     }
 
     function checkCollateralValues(bytes32 ilk, SystemValues storage values) internal {
@@ -303,8 +297,7 @@ contract DssSpellTest is DSTest, DSMath {
         string memory description = new SpellAction().description();
         assertTrue(bytes(description).length > 0);
         // DS-Test can't handle strings directly, so cast to a bytes32.
-        assertEq(stringToBytes32(spell.description()),
-                stringToBytes32(description));
+        assertEq(spell.description(), description);
 
         if(address(spell) != address(MAINNET_SPELL)) {
             assertEq(spell.expiration(), (now + 30 days));
@@ -334,4 +327,3 @@ contract DssSpellTest is DSTest, DSMath {
         checkCollateralValues("TUSD-A", afterSpell);
     }
 }
-
